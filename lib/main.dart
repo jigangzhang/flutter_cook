@@ -1,3 +1,4 @@
+import 'package:cook/widget/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 
@@ -29,6 +30,12 @@ class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   int _currentIndex = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    getCategory();
+  }
+
   void _incrementCounter() {
     setState(() {
       _counter++;
@@ -47,10 +54,25 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
+            SnackButton(),
             Text(
-              'You have pushed the button this many times:',
+              '分类',
+            ),
+            Container(
+              height: 100,
+              child: GridView.count(
+                crossAxisCount: 3,
+                children: <Widget>[
+                  Text('test'),
+                  Text('test'),
+                  Text('test'),
+                  Text('test'),
+                  Text('test'),
+                ],
+              ),
             ),
             Text(
               '$_counter',

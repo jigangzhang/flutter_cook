@@ -1,15 +1,30 @@
+import 'dart:convert';
+
 const int noData = 20101; //查询不到相关数据
 const int invalidId = 20202; //菜谱id不合法
 const int success = 200; //请求成功
 
-class Result<T> {
+class AllCategory {
   String retCode; //	string	是	返回码
   String msg; //string	是	返回说明
-  T result;
+  CategoryInfo result;
+
+  AllCategory.fromJson(res) {
+    retCode = res['retCode'];
+    msg = res['msg'];
+    result =
+        res['result'] == null ? null : CategoryInfo.fromJson(res['result']);
+  }
+
+  factory AllCategory(jsonStr) => jsonStr == null
+      ? null
+      : jsonStr is String
+          ? AllCategory.fromJson(json.decode(jsonStr))
+          : AllCategory.fromJson(jsonStr);
 
   @override
   String toString() {
-    return super.toString();
+    return 'Result{retCode:$retCode,msg:$msg, result:{${result.toString()}}}';
   }
 }
 
@@ -17,11 +32,41 @@ class Category {
   String ctgId; //string	是	分类ID
   String name; //string	是	分类描述
   String parentId; //string	是	上层分类ID
+
+  Category.fromJson(json) {
+    ctgId = json['ctgId'];
+    name = json['name'];
+    parentId = json['parentId'];
+  }
+
+  @override
+  String toString() {
+    return 'Category{ctgId:$ctgId, name:$name, parentId:$parentId}';
+  }
 }
 
 class CategoryInfo {
   Category categoryInfo; //分类描述
   List<CategoryInfo> childs; //子类
+
+  CategoryInfo.fromJson(json) {
+    categoryInfo = json['categoryInfo'] == null
+        ? null
+        : Category.fromJson(json['categoryInfo']);
+
+    if (json['childs'] != null) {
+      childs = [];
+      for (var child in json['childs']) {
+        childs.add(CategoryInfo.fromJson(child));
+      }
+    } else
+      childs = null;
+  }
+
+  @override
+  String toString() {
+    return 'CategoryInfo{categoryInfo:${categoryInfo.toString()}, \nchilds:${childs}}';
+  }
 }
 
 class CookbookList {
