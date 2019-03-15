@@ -1,3 +1,5 @@
+import 'package:cook/entity/cook_bean.dart';
+import 'package:cook/page/category_page.dart';
 import 'package:cook/widget/snack_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
@@ -27,18 +29,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   int _currentIndex = 0;
+  List<CategoryInfo> _category = [];
 
   @override
   void initState() {
     super.initState();
-    getCategory();
+    getCategory((CategoryInfo info) {
+      setState(() {
+        _category = info.childs;
+      });
+    });
   }
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  generateCategoryItem() {
+    return List.generate(_category.length + 1, (index) {
+      return InkWell(
+          onTap: () {
+            if (index < _category.length) {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return CategoryPage(
+                  list: _category,
+                  index: index,
+                );
+              }));
+            }
+          },
+          child: Center(
+            child: Text(index < _category.length
+                ? _category[index].categoryInfo.name
+                : '我的收藏'),
+          ));
     });
   }
 
@@ -52,37 +73,33 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         elevation: 1,
       ),
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            SnackButton(),
-            Text(
-              '分类',
+      body: ListView(
+        children: <Widget>[
+          SnackButton(),
+          Text(
+            '分类',
+          ),
+          Container(
+            child: GridView.count(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              childAspectRatio: 4,
+              crossAxisCount: 3,
+              children: generateCategoryItem(),
             ),
-            Container(
-              height: 100,
-              child: GridView.count(
-                crossAxisCount: 3,
-                children: <Widget>[
-                  Text('test'),
-                  Text('test'),
-                  Text('test'),
-                  Text('test'),
-                  Text('test'),
-                ],
-              ),
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+          ),
+          Text(
+            '每日推荐',
+            style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
+          ),
+          GridView.count(
+            physics: NeverScrollableScrollPhysics(),
+            shrinkWrap: true,
+            crossAxisCount: 2,
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
         tooltip: 'Increment',
         child: Icon(Icons.add),
       ),

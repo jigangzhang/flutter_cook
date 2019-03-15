@@ -18,9 +18,9 @@ const String url_cookbook_by_category = '/menu/search?key=$appKey&cid=';
 ///id	string	是	菜谱ID
 const String url_cookbook_by_id = '/menu/query?key=$appKey&id=';
 
-void getCategory() async {
+void getCategory(Function callback) async {
   Response response = await DioConfig.singleton.dio.get(url_category);
-  print(response.data.toString());
   var category = AllCategory(response.data);
-  print(category.toString());
+  if (category.retCode == success.toString()) callback(category.result);
+  print('json = ' + category.toString());
 }

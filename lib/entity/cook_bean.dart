@@ -54,18 +54,15 @@ class CategoryInfo {
         ? null
         : Category.fromJson(json['categoryInfo']);
 
-    if (json['childs'] != null) {
-      childs = [];
-      for (var child in json['childs']) {
-        childs.add(CategoryInfo.fromJson(child));
-      }
-    } else
-      childs = null;
+    childs = json["childs"] == null ? null : [];
+    for (var child in childs == null ? [] : json['childs']) {
+      childs.add(CategoryInfo.fromJson(child));
+    }
   }
 
   @override
   String toString() {
-    return 'CategoryInfo{categoryInfo:${categoryInfo.toString()}, \nchilds:${childs}}';
+    return 'CategoryInfo{categoryInfo:${categoryInfo.toString()}, \nchilds:$childs}';
   }
 }
 
