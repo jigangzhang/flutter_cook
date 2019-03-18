@@ -35,3 +35,9 @@ void getCookbookListByCid(String cid, int page, Function callback) {
     callback(allCookbook.result);
   });
 }
+
+void getCookbook(String id, Function callback) {
+  DioConfig.singleton.dio.get(url_cookbook_by_id).then((response) {
+    callback(response.data);
+  });
+}

@@ -1,3 +1,4 @@
+import 'package:cook/page/cookbook_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/entity/cook_bean.dart';
@@ -37,14 +38,27 @@ class CookListState extends State<CookListPage> {
         title: Text(widget.name),
       ),
       body: GridView.count(
-        crossAxisCount: 2,
+        crossAxisCount: 3,
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        padding: EdgeInsets.only(top: 15, left: 5, right: 5),
         children: _cookbooks.map((cookbook) {
           return InkWell(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return CookbookPage(
+                  cookbook: cookbook,
+                );
+              }));
+            },
             child: Column(
               children: <Widget>[
-                Image.network(
-                  cookbook.thumbnail,
-                ),
+                cookbook.thumbnail == null
+                    ? Image.asset('image/placeholder.png')
+                    : Image.network(
+                        cookbook.thumbnail,
+                        fit: BoxFit.fill,
+                      ),
                 Text(cookbook.name)
               ],
             ),
