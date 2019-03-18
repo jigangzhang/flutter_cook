@@ -1,4 +1,5 @@
 import 'package:cook/entity/cook_bean.dart';
+import 'package:cook/page/cook_list_page.dart';
 import 'package:flutter/material.dart';
 
 class CategoryPage extends StatefulWidget {
@@ -46,15 +47,27 @@ class CategoryState extends State<CategoryPage> with TickerProviderStateMixin {
               children: category.childs.map((item) {
             return Container(
                 height: 40,
-                child: Center(
-                    child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: <Widget>[
-                    Text(item.categoryInfo.name),
-                    Icon(Icons.arrow_forward)
-                  ],
-                )));
+                padding: EdgeInsets.only(left: 15, right: 15),
+                child: InkWell(
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return CookListPage(
+                            item.categoryInfo.ctgId, item.categoryInfo.name);
+                      }));
+                    },
+                    child: Center(
+                        child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        Text(item.categoryInfo.name),
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.black12,
+                        )
+                      ],
+                    ))));
           }).toList());
         }).toList(),
       ),

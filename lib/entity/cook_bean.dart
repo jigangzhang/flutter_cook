@@ -66,10 +66,43 @@ class CategoryInfo {
   }
 }
 
+class AllCookbook {
+  String retCode; //	string	是	返回码
+  String msg; //string	是	返回说明
+  CookbookList result;
+
+  AllCookbook.fromJson(res) {
+    retCode = res['retCode'];
+    msg = res['msg'];
+    result =
+        res['result'] == null ? null : CookbookList.fromJson(res['result']);
+  }
+
+  factory AllCookbook(jsonStr) => jsonStr == null
+      ? null
+      : jsonStr is String
+          ? AllCookbook.fromJson(json.decode(jsonStr))
+          : AllCookbook.fromJson(jsonStr);
+
+  @override
+  String toString() {
+    return 'Result{retCode:$retCode,msg:$msg, result:{${result.toString()}}}';
+  }
+}
+
 class CookbookList {
   int total; //int	是	菜谱总条数
   int curPage; //int	是	当前页
   List<Cookbook> list; //菜谱
+
+  CookbookList.fromJson(json) {
+    total = json['total'];
+    curPage = json['curPage'];
+    list = json["list"] == null ? null : [];
+    for (var child in list == null ? [] : json['list']) {
+      list.add(Cookbook.fromJson(child));
+    }
+  }
 }
 
 class Cookbook {
@@ -79,17 +112,52 @@ class Cookbook {
   String name; //string	是 	菜谱名称
   Recipe recipe; //是	制作步骤
   String thumbnail; //string	是	预览图地址
+
+  Cookbook.fromJson(json) {
+    print(json);
+    ctgIds = json["ctgIds"] == null ? null : [];
+    for (var child in ctgIds == null ? [] : json['ctgIds']) {
+      ctgIds.add(child);
+    }
+
+    ctgTitles = json["ctgTitles"];
+    menuId = json['menuId'];
+    name = json['name'];
+    recipe = json['recipe'] == null ? null : Recipe.fromJson(json['recipe']);
+    thumbnail = json['thumbnail'];
+  }
 }
 
 class Recipe {
   String img; //"http:\/\/f2.mob.com\/null\/2015\/08\/19\/1439941528865.jpg",
   String ingredients; //"[\"肥瘦相间的猪肉、鸡翅中、冰糖、生姜、酒糟、红烧酱油、蚝油、生抽、盐。\"]",
-  List<CookMethod> method; //步骤
+  List<String> method; //步骤
   String sumary; //": "主题",
   String title; //"怎样做红烧肉翅"
+
+  Recipe.fromJson(jsonRes) {
+    img = jsonRes['img'];
+    ingredients = jsonRes['ingredients'];
+    sumary = jsonRes['sumary'];
+    title = jsonRes['title'];
+    if (jsonRes['method'] != null) {
+      print(jsonRes['method']);
+      var list = jsonRes['method'].replaceAll('"', ' ');
+      print(list);
+      for (var item in json.decode(list)) {
+        method.add((item));
+      }
+    }
+  }
 }
 
 class CookMethod {
   String img;
   String step;
+
+  CookMethod.fromJson(json) {
+    print(json);
+    img = json['"img"'];
+    step = json['"step"'];
+  }
 }
