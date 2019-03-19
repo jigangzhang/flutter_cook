@@ -3,7 +3,7 @@ import 'package:cook/entity/cook_bean.dart';
 import 'config_dio.dart';
 import 'package:dio/dio.dart';
 
-const String appKey = 'key';
+const String appKey = '1eefeae30ed08';
 const String baseUrl = 'http://apicloud.mob.com/v1/cook';
 const String url_category = '/category/query?key=$appKey';
 

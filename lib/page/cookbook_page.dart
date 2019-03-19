@@ -25,13 +25,26 @@ class CookbookState extends State<CookbookPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          InkWell(
+            onTap: () {
+              print('click...');
+            },
+            child: Container(
+              padding: EdgeInsets.only(left: 10, right: 15),
+              child: Center(
+                child: Text('收藏'),
+              ),
+            ),
+          )
+        ],
         centerTitle: true,
         title: Text(_cookbook.name),
       ),
       body: ListView(
         children: <Widget>[
-          _cookbook.thumbnail == null
-              ? null
+          _cookbook.recipe.img == null
+              ? Text('')
               : Image.network(
                   _cookbook.recipe.img,
                   height: 200,
