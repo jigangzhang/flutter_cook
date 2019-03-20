@@ -36,6 +36,17 @@ void getCookbookListByCid(String cid, int page, Function callback) {
   });
 }
 
+void getCookbookListByName(String name, int page, Function callback) {
+  var data = FormData.from({'name': name, 'page': page, 'size': 20});
+  DioConfig.singleton.dio
+      .get(url_cookbook_by_category, queryParameters: data)
+      .then((response) {
+    var allCookbook = AllCookbook(response.data);
+    if (allCookbook != null && allCookbook.result != null)
+      callback(allCookbook.result.list);
+  });
+}
+
 void getCookbook(String id, Function callback) {
   DioConfig.singleton.dio.get(url_cookbook_by_id).then((response) {
     callback(response.data);

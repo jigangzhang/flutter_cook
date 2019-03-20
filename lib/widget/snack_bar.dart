@@ -1,3 +1,4 @@
+import 'package:cook/page/search_page.dart';
 import 'package:flutter/material.dart';
 
 class SnackButton extends StatelessWidget {
@@ -5,10 +6,9 @@ class SnackButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('searching...'),
-          duration: Duration(seconds: 3),
-        ));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+          return SearchPage();
+        }));
       },
       child: Container(
         padding: EdgeInsets.only(top: 5, left: 10, bottom: 5),
