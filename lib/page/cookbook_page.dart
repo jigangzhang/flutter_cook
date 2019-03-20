@@ -56,7 +56,7 @@ class CookbookState extends State<CookbookPage> {
               Text(_cookbook.ctgTitles),
             ],
           ),
-          Text(_cookbook.recipe.sumary),
+          Text('${_cookbook.recipe.sumary}'),
           Text('食材：'),
           Text(_cookbook.recipe.ingredients),
           Text('步骤：'),
