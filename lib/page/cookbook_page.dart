@@ -53,14 +53,14 @@ class CookbookState extends State<CookbookPage> {
           Row(
             children: <Widget>[
               Text('标签：'),
-              Text(_cookbook.ctgTitles),
+              Text('${_cookbook.ctgTitles}'),
             ],
           ),
           Text('${_cookbook.recipe.sumary}'),
           Text('食材：'),
-          Text(_cookbook.recipe.ingredients),
+          Text('${_cookbook.recipe.ingredients}'),
           Text('步骤：'),
-          Text(_cookbook.recipe.method),
+          Text('${_cookbook.recipe.method}'),
         ],
       ),
     );
