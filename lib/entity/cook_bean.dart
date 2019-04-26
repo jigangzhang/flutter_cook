@@ -130,24 +130,31 @@ class Cookbook {
 class Recipe {
   String img; //"http:\/\/f2.mob.com\/null\/2015\/08\/19\/1439941528865.jpg",
   String ingredients; //"[\"肥瘦相间的猪肉、鸡翅中、冰糖、生姜、酒糟、红烧酱油、蚝油、生抽、盐。\"]",
+  List<String> ingredient = [];
   String method; //步骤
   String sumary; //": "主题",
   String title; //"怎样做红烧肉翅"
 
+  List<CookMethod> cookMethods = [];
+
   Recipe.fromJson(jsonRes) {
     img = jsonRes['img'];
     ingredients = jsonRes['ingredients'];
+    if (ingredients != null) {
+      var list = json.decode(ingredients) as List;
+      for (var child in list == null ? [] : list) {
+        ingredient.add(child);
+      }
+    }
     sumary = jsonRes['sumary'];
     title = jsonRes['title'];
     method = jsonRes['method'];
-    //    if (jsonRes['method'] != null) {
-//      print(jsonRes['method']);
-//      var list = jsonRes['method'].replaceAll('"', ' ');
-//      print(list);
-//      for (var item in json.decode(list)) {
-//        method.add((item));
-//      }
-//    }
+    if (method != null) {
+      var list = json.decode(method);
+      for (var child in list == null ? [] : list) {
+        cookMethods.add(CookMethod.fromJson(child));
+      }
+    }
   }
 }
 
@@ -156,7 +163,7 @@ class CookMethod {
   String step;
 
   CookMethod.fromJson(json) {
-    img = json['"img"'];
-    step = json['"step"'];
+    img = json['img'];
+    step = json['step'];
   }
 }

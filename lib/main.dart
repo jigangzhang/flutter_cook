@@ -1,6 +1,6 @@
 import 'package:cook/entity/cook_bean.dart';
 import 'package:cook/page/category_page.dart';
-import 'package:cook/widget/snack_bar.dart';
+import 'package:cook/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 
@@ -10,9 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'cookbook',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primaryColor: Colors.white,
+        backgroundColor: Colors.white,
+        accentColor: Colors.white,
       ),
       home: MyHomePage(title: 'cookbook'),
     );
@@ -29,7 +31,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
   List<CategoryInfo> _category = [];
 
   @override
@@ -53,12 +54,25 @@ class _MyHomePageState extends State<MyHomePage> {
                   index: index,
                 );
               }));
+            } else {
+              print('收藏 $index');
             }
           },
-          child: Center(
-            child: Text(index < _category.length
-                ? _category[index].categoryInfo.name
-                : '我的收藏'),
+          child: Container(
+            child: Center(
+              child: Text(
+                index < _category.length
+                    ? _category[index].categoryInfo.name.substring(1, 3)
+                    : '我的收藏',
+                style: TextStyle(color: Colors.black87, fontSize: 14),
+              ),
+            ),
+            decoration: BoxDecoration(
+                border: Border.all(
+                    style: BorderStyle.solid,
+                    width: 1,
+                    color: Colors.grey[300]),
+                shape: BoxShape.rectangle),
           ));
     });
   }
@@ -73,75 +87,85 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         elevation: 1,
       ),
-      body: ListView(
-        children: <Widget>[
-          SnackButton(),
-          Text(
-            '分类',
-          ),
-          Container(
-            child: GridView.count(
+      body: Container(
+        color: Colors.white,
+        child: ListView(
+          children: <Widget>[
+            SearchButton(),
+            Padding(
+              padding: EdgeInsets.only(left: 12, top: 8),
+              child: Text(
+                '分类',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.fromLTRB(12, 8, 12, 8),
+              child: GridView.count(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
+                childAspectRatio: 2.5,
+                crossAxisCount: 3,
+                children: generateCategoryItem(),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 12, top: 4),
+              child: Text(
+                '每日推荐',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+            GridView.count(
               physics: NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              childAspectRatio: 4,
-              crossAxisCount: 3,
-              children: generateCategoryItem(),
+              crossAxisCount: 2,
             ),
-          ),
-          Text(
-            '每日推荐',
-            style: TextStyle(fontSize: 15, fontStyle: FontStyle.italic),
-          ),
-          GridView.count(
-            physics: NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 2,
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              title: Text('home'),
-              backgroundColor: Colors.lightGreenAccent),
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.add_alert,
-              ),
-              title: Text(
-                'center',
-                style: TextStyle(color: Colors.amberAccent),
-              ),
-              backgroundColor: Colors.cyan),
-        ],
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.shifting,
-        fixedColor: Colors.lightGreenAccent,
-        iconSize: 25,
-      ),
-      drawer: Container(
-        child: Drawer(
-          elevation: 5,
-          child: ListView(
-            children: <Widget>[
-              ListTile(
-                title: Text('center'),
-              )
-            ],
-          ),
+          ],
         ),
-        width: 240,
       ),
+//      bottomNavigationBar: BottomNavigationBar(
+//        items: [
+//          BottomNavigationBarItem(
+//              icon: Icon(Icons.home),
+//              title: Text('home'),
+//              backgroundColor: Colors.lightGreenAccent),
+//          BottomNavigationBarItem(
+//              icon: Icon(
+//                Icons.add_alert,
+//              ),
+//              title: Text(
+//                'center',
+//                style: TextStyle(color: Colors.amberAccent),
+//              ),
+//              backgroundColor: Colors.cyan),
+//        ],
+//        currentIndex: _currentIndex,
+//        onTap: (index) {
+//          setState(() {
+//            _currentIndex = index;
+//          });
+//        },
+//        type: BottomNavigationBarType.shifting,
+//        fixedColor: Colors.lightGreenAccent,
+//        iconSize: 25,
+//      ),
+//      drawer: Container(
+//        child: Drawer(
+//          elevation: 5,
+//          child: ListView(
+//            children: <Widget>[
+//              ListTile(
+//                title: Text('center'),
+//              )
+//            ],
+//          ),
+//        ),
+//        width: 240,
+//      ),
     );
   }
 }

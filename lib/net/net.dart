@@ -23,7 +23,6 @@ void getCategory(Function callback) async {
   Response response = await DioConfig.singleton.dio.get(url_category);
   var category = AllCategory(response.data);
   if (category.retCode == success.toString()) callback(category.result);
-  print('json = ' + category.toString());
 }
 
 void getCookbookListByCid(String cid, int page, Function callback) {
@@ -31,6 +30,7 @@ void getCookbookListByCid(String cid, int page, Function callback) {
   DioConfig.singleton.dio
       .get(url_cookbook_by_category, queryParameters: data)
       .then((response) {
+//    response.statusCode == 200
     var allCookbook = AllCookbook(response.data);
     callback(allCookbook.result);
   });
