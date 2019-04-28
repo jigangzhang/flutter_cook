@@ -48,7 +48,7 @@ void getCookbookListByName(String name, int page, Function callback) {
 }
 
 void getCookbook(String id, Function callback) {
-  DioConfig.singleton.dio.get(url_cookbook_by_id).then((response) {
-    callback(response.data);
+  DioConfig.singleton.dio.get(url_cookbook_by_id + id).then((response) {
+    callback(NetCookbook(response.data).result);
   });
 }

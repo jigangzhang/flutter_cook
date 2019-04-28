@@ -2,6 +2,7 @@ import 'package:cook/page/cookbook_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/entity/cook_bean.dart';
+import 'package:cook/database/database_sqflite.dart';
 
 ///上拉加载
 class CookListPage extends StatefulWidget {
@@ -44,16 +45,27 @@ class CookListState extends State<CookListPage> {
   }
 
   generateData() {
-    getCookbookListByCid(_cid, _pageIndex, (CookbookList cookbookList) {
-      setState(() {
-        if (cookbookList.curPage * 20 < cookbookList.total)
-          _state = 1;
-        else
+    if (_cid == null) {
+      DatabaseHelper().queryAll(DatabaseHelper.TYPE_COLLECT).then((list) {
+        setState(() {
           _state = 2;
-        _cookbooks.addAll(cookbookList.list);
-        _isLoading = false;
+          list.forEach((map) {
+            _cookbooks.add(Cookbook.fromMap(map));
+          });
+        });
       });
-    });
+    } else {
+      getCookbookListByCid(_cid, _pageIndex, (CookbookList cookbookList) {
+        setState(() {
+          if (cookbookList.curPage * 20 < cookbookList.total)
+            _state = 1;
+          else
+            _state = 2;
+          _cookbooks.addAll(cookbookList.list);
+          _isLoading = false;
+        });
+      });
+    }
   }
 
   @override

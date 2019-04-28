@@ -3,6 +3,7 @@ import 'package:cook/page/category_page.dart';
 import 'package:cook/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
+import 'package:cook/page/cook_list_page.dart';
 
 void main() => runApp(MyApp());
 
@@ -55,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               }));
             } else {
-              print('收藏 $index');
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return CookListPage(null, '我的收藏');
+              }));
             }
           },
           child: Container(

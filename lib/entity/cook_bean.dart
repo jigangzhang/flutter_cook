@@ -105,6 +105,24 @@ class CookbookList {
   }
 }
 
+class NetCookbook {
+  String retCode; //	string	是	返回码
+  String msg; //string	是	返回说明
+  Cookbook result;
+
+  NetCookbook.fromJson(res) {
+    retCode = res['retCode'];
+    msg = res['msg'];
+    result = res['result'] == null ? null : Cookbook.fromJson(res['result']);
+  }
+
+  factory NetCookbook(jsonStr) => jsonStr == null
+      ? null
+      : jsonStr is String
+          ? NetCookbook.fromJson(json.decode(jsonStr))
+          : NetCookbook.fromJson(jsonStr);
+}
+
 class Cookbook {
   List<String> ctgIds; //array	所属分类ID，多种
   String ctgTitles; //string	是	分类标签
@@ -124,6 +142,27 @@ class Cookbook {
     name = json['name'];
     recipe = json['recipe'] == null ? null : Recipe.fromJson(json['recipe']);
     thumbnail = json['thumbnail'];
+  }
+
+  toMap() {
+    var map = Map<String, dynamic>();
+    map['menuId'] = menuId;
+    map['name'] = name;
+    map['thumbnail'] = thumbnail;
+    map['ctgTitles'] = ctgTitles;
+    return map;
+  }
+
+  Cookbook.fromMap(Map<String, dynamic> map) {
+    this.menuId = map['menuId'];
+    this.name = map['name'];
+    this.thumbnail = map['thumbnail'];
+    this.ctgTitles = map['ctgTitles'];
+  }
+
+  @override
+  String toString() {
+    return 'Cookbook{ctgIds: $ctgIds, ctgTitles: $ctgTitles, menuId: $menuId, name: $name, recipe: $recipe, thumbnail: $thumbnail}';
   }
 }
 
@@ -156,6 +195,11 @@ class Recipe {
       }
     }
   }
+
+  @override
+  String toString() {
+    return 'Recipe{img: $img, ingredients: $ingredients, ingredient: $ingredient, method: $method, sumary: $sumary, title: $title, cookMethods: $cookMethods}';
+  }
 }
 
 class CookMethod {
@@ -165,5 +209,10 @@ class CookMethod {
   CookMethod.fromJson(json) {
     img = json['img'];
     step = json['step'];
+  }
+
+  @override
+  String toString() {
+    return 'CookMethod{img: $img, step: $step}';
   }
 }

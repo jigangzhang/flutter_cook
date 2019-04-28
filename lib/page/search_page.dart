@@ -2,6 +2,7 @@ import 'package:cook/entity/cook_bean.dart';
 import 'package:cook/page/cookbook_page.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
+import 'package:cook/database/database_sqflite.dart';
 
 class SearchPage extends StatefulWidget {
   @override
@@ -11,9 +12,24 @@ class SearchPage extends StatefulWidget {
 }
 
 class SearchState extends State<SearchPage> {
-  List<Cookbook> _cookbookList;
+  List<Cookbook> _cookbookList = [];
   bool _hasInput = false;
   final TextEditingController _controller = TextEditingController();
+  DatabaseHelper _dBHelper;
+
+  @override
+  void initState() {
+    super.initState();
+    _dBHelper = DatabaseHelper();
+    _dBHelper.queryAll(DatabaseHelper.TYPE_HISTORY).then((list) {
+      setState(() {
+        list.forEach((item) {
+          print('quey -- ${item.toString()}');
+          _cookbookList.add(Cookbook.fromMap(item));
+        });
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,6 +168,10 @@ class SearchState extends State<SearchPage> {
                     ),
                   ),
                   onTap: () {
+                    var future = _dBHelper.saveCookbook(_cookbookList[index]);
+                    future.then((result) {
+                      print('insert--$result');
+                    });
                     Navigator.of(context)
                         .push(MaterialPageRoute(builder: (context) {
                       return CookbookPage(
