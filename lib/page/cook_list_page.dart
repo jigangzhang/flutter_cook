@@ -1,4 +1,5 @@
 import 'package:cook/page/cookbook_page.dart';
+import 'package:cook/widget/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/entity/cook_bean.dart';
@@ -42,6 +43,21 @@ class CookListState extends State<CookListPage> {
         }
       }
     });
+    if (_cid != null) _show();
+  }
+
+  _show() async {
+    await Future.delayed(Duration(milliseconds: 100));
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return NetLoadingDialog(
+          dismissCallback: () {},
+          requestCallback: _getCookbookList(),
+        );
+      },
+    );
   }
 
   generateData() {
@@ -55,17 +71,22 @@ class CookListState extends State<CookListPage> {
         });
       });
     } else {
-      getCookbookListByCid(_cid, _pageIndex, (CookbookList cookbookList) {
-        setState(() {
-          if (cookbookList.curPage * 20 < cookbookList.total)
-            _state = 1;
-          else
-            _state = 2;
-          _cookbooks.addAll(cookbookList.list);
-          _isLoading = false;
-        });
-      });
+      _getCookbookList();
     }
+  }
+
+  Future<int> _getCookbookList() async {
+    await getCookbookListByCid(_cid, _pageIndex, (CookbookList cookbookList) {
+      setState(() {
+        if (cookbookList.curPage * 20 < cookbookList.total)
+          _state = 1;
+        else
+          _state = 2;
+        _cookbooks.addAll(cookbookList.list);
+        _isLoading = false;
+      });
+    });
+    return 1;
   }
 
   @override

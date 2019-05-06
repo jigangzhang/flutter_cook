@@ -19,36 +19,37 @@ const String url_cookbook_by_name = '/menu/search?key=$appKey&name=';
 ///id	string	是	菜谱ID
 const String url_cookbook_by_id = '/menu/query?key=$appKey&id=';
 
-void getCategory(Function callback) async {
+Future<CategoryInfo> getCategory(Function callback) async {
   Response response = await DioConfig.singleton.dio.get(url_category);
   var category = AllCategory(response.data);
   if (category.retCode == success.toString()) callback(category.result);
+  return category.result;
 }
 
-void getCookbookListByCid(String cid, int page, Function callback) {
+Future<int> getCookbookListByCid(
+    String cid, int page, Function callback) async {
   var data = FormData.from({'cid': cid, 'page': page, 'size': 20});
-  DioConfig.singleton.dio
-      .get(url_cookbook_by_category, queryParameters: data)
-      .then((response) {
+  var response = await DioConfig.singleton.dio
+      .get(url_cookbook_by_category, queryParameters: data);
 //    response.statusCode == 200
-    var allCookbook = AllCookbook(response.data);
-    callback(allCookbook.result);
-  });
+  var allCookbook = AllCookbook(response.data);
+  callback(allCookbook.result);
+  return 1;
 }
 
-void getCookbookListByName(String name, int page, Function callback) {
+Future<int> getCookbookListByName(
+    String name, int page, Function callback) async {
   var data = FormData.from({'name': name, 'page': page, 'size': 20});
-  DioConfig.singleton.dio
-      .get(url_cookbook_by_category, queryParameters: data)
-      .then((response) {
-    var allCookbook = AllCookbook(response.data);
-    if (allCookbook != null && allCookbook.result != null)
-      callback(allCookbook.result.list);
-  });
+  var response = await DioConfig.singleton.dio
+      .get(url_cookbook_by_category, queryParameters: data);
+  var allCookbook = AllCookbook(response.data);
+  if (allCookbook != null && allCookbook.result != null)
+    callback(allCookbook.result.list);
+  return 1;
 }
 
-void getCookbook(String id, Function callback) {
-  DioConfig.singleton.dio.get(url_cookbook_by_id + id).then((response) {
-    callback(NetCookbook(response.data).result);
-  });
+Future<int> getCookbook(String id, Function callback) async {
+  var response = await DioConfig.singleton.dio.get(url_cookbook_by_id + id);
+  callback(NetCookbook(response.data).result);
+  return 1;
 }

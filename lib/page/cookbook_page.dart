@@ -1,4 +1,5 @@
 import 'package:cook/entity/cook_bean.dart';
+import 'package:cook/widget/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/database/database_sqflite.dart';
@@ -26,17 +27,8 @@ class CookbookState extends State<CookbookPage> {
   void initState() {
     super.initState();
     _cookbook = widget.cookbook;
-    print('page -- ${_cookbook.toString()}');
     if (widget.needQuery || _cookbook.recipe == null) {
-      getCookbook(_cookbook.menuId, (cookbook) {
-        setState(() {
-          _cookbook = cookbook;
-          if (_cookbook.recipe != null)
-            _cookbook.recipe.ingredient.forEach((item) {
-              _ingredient = _ingredient + item;
-            });
-        });
-      });
+      _show();
     } else if (_cookbook.recipe != null)
       _cookbook.recipe.ingredient.forEach((item) {
         _ingredient = _ingredient + item;
@@ -51,11 +43,33 @@ class CookbookState extends State<CookbookPage> {
     });
   }
 
+  _show() async {
+    await Future.delayed(Duration(milliseconds: 100));
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return NetLoadingDialog(
+          dismissCallback: () {},
+          requestCallback: getCookbook(_cookbook.menuId, (cookbook) {
+            setState(() {
+              _cookbook = cookbook;
+              if (_cookbook.recipe != null)
+                _cookbook.recipe.ingredient.forEach((item) {
+                  _ingredient = _ingredient + item;
+                });
+            });
+          }),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 3,
+        elevation: 1,
         actions: <Widget>[
           InkWell(
             onTap: () {
@@ -155,7 +169,7 @@ class CookbookState extends State<CookbookPage> {
   }
 
   generateMethod() {
-    if (_cookbook.recipe.method.length > 0) {
+    if (_cookbook.recipe.method != null && _cookbook.recipe.method.length > 0) {
       var _list = [];
       _list.add(Text('制作步骤：'));
       _cookbook.recipe.cookMethods.forEach((method) {

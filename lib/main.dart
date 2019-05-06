@@ -4,6 +4,7 @@ import 'package:cook/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/page/cook_list_page.dart';
+import 'package:cook/widget/progress_dialog.dart';
 
 void main() => runApp(MyApp());
 
@@ -37,11 +38,30 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    getCategory((CategoryInfo info) {
+    _show();
+  }
+
+  _show() async {
+    await Future.delayed(Duration(milliseconds: 100));
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return NetLoadingDialog(
+          dismissCallback: () {},
+          requestCallback: getCategoryInfo(),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> getCategoryInfo() async {
+    var info = await getCategory((CategoryInfo info) {
       setState(() {
         _category = info.childs;
       });
     });
+    return info;
   }
 
   generateCategoryItem() {
@@ -90,46 +110,49 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
         elevation: 1,
       ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: <Widget>[
-            SearchButton(),
-            Padding(
-              padding: EdgeInsets.only(left: 12, top: 8),
-              child: Text(
-                '分类',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+      body: _category.length == 0
+          ? Container()
+          : Container(
+              color: Colors.white,
+              child: ListView(
+                children: <Widget>[
+                  SearchButton(),
+                  Padding(
+                    padding: EdgeInsets.only(left: 12, top: 8),
+                    child: Text(
+                      '分类',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(12, 8, 12, 8),
+                    child: GridView.count(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      childAspectRatio: 2.5,
+                      crossAxisCount: 3,
+                      children: generateCategoryItem(),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 12, top: 4),
+                    child: Text(
+                      '每日推荐',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 2,
+                  ),
+                ],
               ),
             ),
-            Container(
-              margin: EdgeInsets.fromLTRB(12, 8, 12, 8),
-              child: GridView.count(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                childAspectRatio: 2.5,
-                crossAxisCount: 3,
-                children: generateCategoryItem(),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: 12, top: 4),
-              child: Text(
-                '每日推荐',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-            GridView.count(
-              physics: NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-            ),
-          ],
-        ),
-      ),
 //      bottomNavigationBar: BottomNavigationBar(
 //        items: [
 //          BottomNavigationBarItem(

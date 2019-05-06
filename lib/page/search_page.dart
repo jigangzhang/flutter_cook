@@ -1,5 +1,6 @@
 import 'package:cook/entity/cook_bean.dart';
 import 'package:cook/page/cookbook_page.dart';
+import 'package:cook/widget/progress_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
 import 'package:cook/database/database_sqflite.dart';
@@ -24,11 +25,19 @@ class SearchState extends State<SearchPage> {
     _dBHelper.queryAll(DatabaseHelper.TYPE_HISTORY).then((list) {
       setState(() {
         list.forEach((item) {
-          print('quey -- ${item.toString()}');
           _cookbookList.add(Cookbook.fromMap(item));
         });
       });
     });
+  }
+
+  Future<int> getCookbookList(String text) async {
+    await getCookbookListByName(text, 1, (List<Cookbook> list) {
+      setState(() {
+        _cookbookList = list;
+      });
+    });
+    return 1;
   }
 
   @override
@@ -64,11 +73,16 @@ class SearchState extends State<SearchPage> {
                           });
                         },
                         onSubmitted: (text) {
-                          getCookbookListByName(text, 1, (List<Cookbook> list) {
-                            setState(() {
-                              _cookbookList = list;
-                            });
-                          });
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (context) {
+                              return NetLoadingDialog(
+                                dismissCallback: () {},
+                                requestCallback: getCookbookList(text),
+                              );
+                            },
+                          );
                         },
                         style: TextStyle(fontSize: 14, color: Colors.black87),
                         decoration: InputDecoration.collapsed(

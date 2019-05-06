@@ -51,7 +51,6 @@ class DatabaseHelper {
     var list = await database.query(_tableName,
         where: '$_columnMenuId = ? and $_columnType = $TYPE_COLLECT',
         whereArgs: [cookbook.menuId]);
-    print('query result -- ${list.length}');
     if (list != null && list.length == 0) {
       var map = cookbook.toMap();
       map[_columnType] = TYPE_COLLECT;
@@ -69,7 +68,6 @@ class DatabaseHelper {
     var list = await database.query(_tableName,
         where: '$_columnMenuId = ? and $_columnType = $TYPE_HISTORY',
         whereArgs: [cookbook.menuId]);
-    print('query result -- ${list.length}');
     if (list != null && list.length > 0) {
       result = 200;
     } else {
