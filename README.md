@@ -20,3 +20,4 @@ samples, guidance on mobile development, and a full API reference.
 > 3. 动画。
 > 4. 推荐列表
 > 5. 接口数据处理
+> 6. 启动页、App Icon 做图

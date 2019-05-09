@@ -1,5 +1,6 @@
 import 'package:cook/entity/cook_bean.dart';
 import 'package:cook/page/category_page.dart';
+import 'package:cook/page/cookbook_page.dart';
 import 'package:cook/widget/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:cook/net/net.dart';
@@ -12,13 +13,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'cookbook',
+      title: '爱厨房',
       theme: ThemeData(
         primaryColor: Colors.white,
         backgroundColor: Colors.white,
         accentColor: Colors.white,
       ),
-      home: MyHomePage(title: 'cookbook'),
+      home: MyHomePage(title: '爱厨房'),
     );
   }
 }
@@ -34,11 +35,20 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<CategoryInfo> _category = [];
+  List<Cookbook> _recommendList;
 
   @override
   void initState() {
     super.initState();
     _show();
+    var time = DateTime.now();
+    getCookbookListByCid((CookbookList cookbooks) {
+      setState(() {
+        if (cookbooks != null) {
+          _recommendList = cookbooks.list;
+        }
+      });
+    }, page: time.day * time.month, size: 8);
   }
 
   _show() async {
@@ -106,7 +116,13 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text(
+          widget.title,
+          style: TextStyle(
+              fontSize: 16,
+              color: Colors.orange[300],
+              fontWeight: FontWeight.bold),
+        ),
         centerTitle: true,
         elevation: 1,
       ),
@@ -123,6 +139,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       '分类',
                       style: TextStyle(
                         fontSize: 16,
+                        color: Colors.orange[300],
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -138,18 +155,61 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 12, top: 4),
+                    padding: EdgeInsets.only(left: 12, top: 4, bottom: 12),
                     child: Text(
                       '每日推荐',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.orange[300],
+                          fontWeight: FontWeight.bold),
                     ),
                   ),
-                  GridView.count(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                  ),
+                  _recommendList == null
+                      ? Container(
+                          width: 0,
+                          height: 0,
+                        )
+                      : GridView.count(
+                          padding:
+                              EdgeInsets.only(left: 12, right: 12, bottom: 10),
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          childAspectRatio: 1.6,
+                          children: _recommendList.map((cookbook) {
+                            return InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .push(MaterialPageRoute(builder: (context) {
+                                  return CookbookPage(
+                                    cookbook: cookbook,
+                                  );
+                                }));
+                              },
+                              child: Column(
+                                children: <Widget>[
+                                  cookbook.thumbnail == null
+                                      ? Image.asset(
+                                          'image/placeholder.png',
+                                          fit: BoxFit.fill,
+                                          height: 95,
+                                        )
+                                      : FadeInImage.assetNetwork(
+                                          placeholder: 'image/placeholder.png',
+                                          image: cookbook.thumbnail,
+                                          fit: BoxFit.fill,
+                                        ),
+                                  Expanded(
+                                    child: Text(
+                                      cookbook.name,
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }).toList(),
+                        ),
                 ],
               ),
             ),

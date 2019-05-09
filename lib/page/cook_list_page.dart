@@ -76,16 +76,20 @@ class CookListState extends State<CookListPage> {
   }
 
   Future<int> _getCookbookList() async {
-    await getCookbookListByCid(_cid, _pageIndex, (CookbookList cookbookList) {
-      setState(() {
-        if (cookbookList.curPage * 20 < cookbookList.total)
-          _state = 1;
-        else
-          _state = 2;
-        _cookbooks.addAll(cookbookList.list);
-        _isLoading = false;
-      });
-    });
+    await getCookbookListByCid(
+      (CookbookList cookbookList) {
+        setState(() {
+          if (cookbookList.curPage * 20 < cookbookList.total)
+            _state = 1;
+          else
+            _state = 2;
+          _cookbooks.addAll(cookbookList.list);
+          _isLoading = false;
+        });
+      },
+      cid: _cid,
+      page: _pageIndex,
+    );
     return 1;
   }
 

@@ -26,9 +26,12 @@ Future<CategoryInfo> getCategory(Function callback) async {
   return category.result;
 }
 
-Future<int> getCookbookListByCid(
-    String cid, int page, Function callback) async {
-  var data = FormData.from({'cid': cid, 'page': page, 'size': 20});
+Future<int> getCookbookListByCid(Function callback,
+    {String cid, int page, int size = 20}) async {
+  var data = FormData.from({'page': page, 'size': size});
+  if (cid != null) {
+    data.add('cid', cid);
+  }
   var response = await DioConfig.singleton.dio
       .get(url_cookbook_by_category, queryParameters: data);
 //    response.statusCode == 200
