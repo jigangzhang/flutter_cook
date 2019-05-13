@@ -75,3 +75,4 @@ flutter:
   assets:
 
   - image/placeholder.png
+  - image/no-data.png

@@ -119,9 +119,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(
           widget.title,
           style: TextStyle(
-              fontSize: 16,
-              color: Colors.orange[300],
-              fontWeight: FontWeight.bold),
+              fontSize: 16, color: Colors.black54, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
         elevation: 1,
@@ -151,6 +149,8 @@ class _MyHomePageState extends State<MyHomePage> {
                       shrinkWrap: true,
                       childAspectRatio: 2.5,
                       crossAxisCount: 3,
+                      mainAxisSpacing: 6,
+                      crossAxisSpacing: 6,
                       children: generateCategoryItem(),
                     ),
                   ),
@@ -171,11 +171,12 @@ class _MyHomePageState extends State<MyHomePage> {
                         )
                       : GridView.count(
                           padding:
-                              EdgeInsets.only(left: 12, right: 12, bottom: 10),
+                              EdgeInsets.only(left: 12, right: 12, bottom: 25),
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           crossAxisCount: 2,
                           childAspectRatio: 1.6,
+                          mainAxisSpacing: 15,
                           children: _recommendList.map((cookbook) {
                             return InkWell(
                               onTap: () {

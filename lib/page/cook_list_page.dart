@@ -98,65 +98,83 @@ class CookListState extends State<CookListPage> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        elevation: 3,
+        elevation: 1,
         iconTheme: IconThemeData(color: Colors.grey, size: 14),
         title: Text(
           widget.name,
           style: TextStyle(fontSize: 16),
         ),
       ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: GridView.count(
-//              semanticChildCount: _cookbooks.length + 1,
-              shrinkWrap: true,
-              controller: _controller,
-              crossAxisCount: 3,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
-              padding: EdgeInsets.only(top: 15, left: 8, right: 8),
-              children: _cookbooks.map((cookbook) {
-                return InkWell(
-                  onTap: () {
-                    Navigator.of(context)
-                        .push(MaterialPageRoute(builder: (context) {
-                      return CookbookPage(
-                        cookbook: cookbook,
-                      );
-                    }));
-                  },
-                  child: Column(
-                    children: <Widget>[
-                      cookbook.thumbnail == null
-                          ? Image.asset('image/placeholder.png')
-                          : FadeInImage.assetNetwork(
-                              placeholder: 'image/placeholder.png',
-                              image: cookbook.thumbnail,
-                              fit: BoxFit.fill,
-                            ),
-                      Expanded(
-                        child: Text(
-                          cookbook.name,
-                          style: TextStyle(fontSize: 12),
-                        ),
-                      ),
-                    ],
+      body: _cid == null && _cookbooks.length == 0
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Image.asset(
+                    'image/no-data.png',
+                    height: 100,
+                    width: 100,
                   ),
-                );
-              }).toList(),
+                  Text(
+                    '暂无收藏记录',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                  )
+                ],
+              ),
+            )
+          : Column(
+              children: <Widget>[
+                Expanded(
+                  child: GridView.count(
+//              semanticChildCount: _cookbooks.length + 1,
+                    shrinkWrap: true,
+                    controller: _controller,
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 10,
+                    mainAxisSpacing: 10,
+                    padding: EdgeInsets.only(top: 15, left: 8, right: 8),
+                    children: _cookbooks.map((cookbook) {
+                      return InkWell(
+                        onTap: () {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return CookbookPage(
+                              cookbook: cookbook,
+                            );
+                          }));
+                        },
+                        child: Column(
+                          children: <Widget>[
+                            cookbook.thumbnail == null
+                                ? Image.asset('image/placeholder.png')
+                                : FadeInImage.assetNetwork(
+                                    placeholder: 'image/placeholder.png',
+                                    image: cookbook.thumbnail,
+                                    fit: BoxFit.fill,
+                                  ),
+                            Expanded(
+                              child: Text(
+                                cookbook.name,
+                                style: TextStyle(fontSize: 12),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+                _isLoading
+                    ? Text('数据加载中...')
+                    : ( //_state == 2
+                        //? Text('没有更多了')
+                        /*:*/ Container(
+                        height: 0,
+                        width: 0,
+                      )),
+              ],
             ),
-          ),
-          _isLoading
-              ? Text('数据加载中...')
-              : ( //_state == 2
-                  //? Text('没有更多了')
-                  /*:*/ Container(
-                  height: 0,
-                  width: 0,
-                )),
-        ],
-      ),
     );
   }
 
